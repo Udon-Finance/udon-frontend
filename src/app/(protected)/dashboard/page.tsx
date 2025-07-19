@@ -19,6 +19,8 @@ export default function DashboardPage() {
     assets: processedAssets,
     supplyPositions,
     borrowPositions,
+    supplyReserves,
+    borrowReserves,
     isLoading: isLoadingAssets,
     refresh: refetchAssets,
     yourSupplyBalancePosition,
@@ -184,14 +186,14 @@ export default function DashboardPage() {
           />
           <SupplyTable
             title="Assets to supply"
-            reserves={processedAssets}
+            reserves={supplyReserves}
             isLoading={isLoadingTable}
             mutateAssets={handleFetchData}
             accountData={accountData}
           />
           <BorrowTable
             title="Assets to borrow"
-            reserves={processedAssets}
+            reserves={borrowReserves}
             isLoading={isLoadingTable}
             mutateAssets={handleFetchData}
             enableBorrow={enableBorrow}

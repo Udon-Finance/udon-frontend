@@ -16,6 +16,7 @@
 # next.js
 /.next/
 /out/
+/contract/*
 
 # production
 /build
@@ -135,3 +136,4 @@ public/images/landing/hero/cube-rotate.gif
 
 
 **/rell/
+udon-contracts/*

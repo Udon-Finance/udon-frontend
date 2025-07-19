@@ -42,6 +42,8 @@ interface SortableTableProps<T> {
   className?: string;
   isLoading?: boolean;
   skeletonRows?: number;
+  expandedRows?: Set<string>;
+  renderExpandableContent?: (symbol: string) => React.ReactNode | null;
 }
 
 export function SortableTable<T>({
@@ -51,6 +53,8 @@ export function SortableTable<T>({
   className,
   isLoading = false,
   skeletonRows = 3,
+  expandedRows,
+  renderExpandableContent,
 }: SortableTableProps<T>) {
   const [sortColumn, setSortColumn] = useState<keyof T | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>(null);
@@ -240,29 +244,61 @@ export function SortableTable<T>({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedData.map((row, rowIndex) => (
-              <TableRow
-                key={rowIndex}
-                className={cn(rowIndex % 2 === 0 ? 'bg-card' : 'bg-[#28292C]', 'border-none')}
-              >
-                {columns.map((column, colIndex) => (
-                  <TableCell
-                    key={colIndex}
-                    className={cn(
-                      'py-4',
-                      colIndex === 0 && 'rounded-l-lg pl-8',
-                      colIndex === columns.length - 1 && 'rounded-r-lg pr-8'
-                    )}
+            {paginatedData.map((row, rowIndex) => {
+              const symbol =
+                row && typeof row === 'object' && 'symbol' in row
+                  ? (row as { symbol: string }).symbol
+                  : '';
+              const isExpanded = expandedRows?.has(symbol) || false;
+
+              return (
+                <React.Fragment key={rowIndex}>
+                  <TableRow
+                    className={cn(rowIndex % 2 === 0 ? 'bg-card' : 'bg-[#28292C]', 'border-none')}
                   >
-                    {isLoading
-                      ? renderSkeletonOrCell(column)
-                      : column.cell
-                        ? column.cell({ row })
-                        : String(row[column.accessorKey])}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
+                    {columns.map((column, colIndex) => (
+                      <TableCell
+                        key={colIndex}
+                        className={cn(
+                          'py-4',
+                          colIndex === 0 && 'rounded-l-lg pl-8',
+                          colIndex === columns.length - 1 && 'rounded-r-lg pr-8'
+                        )}
+                      >
+                        {isLoading
+                          ? renderSkeletonOrCell(column)
+                          : column.cell
+                            ? column.cell({ row })
+                            : String(row[column.accessorKey])}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+
+                  {/* Expandable Row Content */}
+                  {!isLoading && renderExpandableContent && (
+                    <TableRow className="border-none">
+                      <TableCell colSpan={columns.length} className="pt-0 pb-3">
+                        <div
+                          className={cn(
+                            'overflow-hidden transition-all duration-300 ease-out',
+                            isExpanded ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+                          )}
+                        >
+                          <div
+                            className={cn(
+                              'transform transition-all duration-300 ease-out',
+                              isExpanded ? 'translate-y-0' : '-translate-y-2'
+                            )}
+                          >
+                            {isExpanded && renderExpandableContent(symbol)}
+                          </div>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </React.Fragment>
+              );
+            })}
           </TableBody>
         </Table>
       </div>

@@ -24,3 +24,15 @@ export const ensureString = (input: Buffer | string | number | Record<string, un
 export const capitalizeFirstLetter = (s: string) => {
   return s.charAt(0).toUpperCase() + s.slice(1);
 };
+
+export const truncateAddress = (address: string, startChars = 6, endChars = 4) => {
+  if (!address) return '';
+  if (address.length <= startChars + endChars) return address;
+  return `${address.slice(0, startChars)}...${address.slice(-endChars)}`;
+};
+
+export const copyToClipboard = async (text: string) => {
+  if (navigator.clipboard) {
+    await navigator.clipboard.writeText(text);
+  }
+};

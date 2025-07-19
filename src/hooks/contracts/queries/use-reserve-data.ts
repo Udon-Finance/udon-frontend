@@ -27,6 +27,8 @@ export function useReserveData(assetId: string) {
         asset_id: Buffer.from(assetId, 'hex'),
       });
 
+      console.log('pricesResult in reserve data', pricesResult);
+
       // 2. Format Ray for all big number fields and convert to number
       reserves = {
         ...reserves,

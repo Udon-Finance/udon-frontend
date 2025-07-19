@@ -121,12 +121,48 @@ const config: Config = {
       },
       animation: {
         shine: 'shine var(--duration, 2s) infinite linear',
+        'expand-down': 'expandDown 0.3s ease-out',
+        'collapse-up': 'collapseUp 0.3s ease-out',
+        'chevron-rotate-up': 'chevronRotateUp 0.2s ease-out forwards',
+        'chevron-rotate-down': 'chevronRotateDown 0.2s ease-out forwards',
       },
       keyframes: {
         shine: {
           '0%': { backgroundPosition: '0% 0%' },
           '50%': { backgroundPosition: '100% 100%' },
           '100%': { backgroundPosition: '0% 0%' },
+        },
+        expandDown: {
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(-10px)',
+            maxHeight: '0',
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateY(0)',
+            maxHeight: '500px',
+          },
+        },
+        collapseUp: {
+          '0%': {
+            opacity: '1',
+            transform: 'translateY(0)',
+            maxHeight: '500px',
+          },
+          '100%': {
+            opacity: '0',
+            transform: 'translateY(-10px)',
+            maxHeight: '0',
+          },
+        },
+        chevronRotateUp: {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(180deg)' },
+        },
+        chevronRotateDown: {
+          '0%': { transform: 'rotate(180deg)' },
+          '100%': { transform: 'rotate(0deg)' },
         },
       },
     },

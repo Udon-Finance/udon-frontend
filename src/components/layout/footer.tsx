@@ -22,6 +22,10 @@ const linkFooter = [
     url: '/dashboard',
   },
   {
+    title: 'Docs',
+    url: env.docs,
+  },
+  {
     title: 'Report Bug',
     url: env.reportBugFormUrl,
   },
@@ -86,8 +90,8 @@ export const Footer: React.FC = () => {
       </div>
       <div className="flex flex-grow-[0.2] flex-col-reverse sm:flex-row text-white sm:items-center sm:justify-between px-8 gap-6">
         <Typography>@2025 Udon Finance. All rights reserved.</Typography>
-        <div className="flex flex-col w-[30%] gap-3 sm:items-end">
-          <div className="flex flex-row items-center justify-between gap-10">
+        <div className="flex flex-col w-auto gap-3 sm:items-end">
+          <div className="flex flex-row items-center gap-10">
             {linkFooter.map(({ title, url }) => {
               return (
                 <Link href={url} key={url}>

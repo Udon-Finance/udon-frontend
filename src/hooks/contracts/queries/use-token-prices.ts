@@ -7,6 +7,7 @@ interface AssetPrice {
   stork_asset_id: string;
   price: number;
   timestamp: string;
+  asset_symbol: string;
 }
 
 interface TokenPriceMap {
@@ -52,7 +53,7 @@ export function useTokenPrices(tokens?: (Asset | Balance)[]) {
       // Create a map of symbol -> price
       const priceMap: TokenPriceMap = {};
       pricesData.forEach(priceData => {
-        priceMap[priceData.stork_asset_id] = Number(priceData.price) || 0;
+        priceMap[priceData.asset_symbol] = Number(priceData.price) || 0;
       });
 
       console.log('priceMap', priceMap);

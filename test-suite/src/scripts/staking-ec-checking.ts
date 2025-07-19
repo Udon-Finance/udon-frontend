@@ -1,7 +1,6 @@
 import { createClient, encryption } from 'postchain-client';
 import {
   Account,
-  createAmount,
   // createAmount,
   createConnection,
   createInMemoryEvmKeyStore,
@@ -61,10 +60,19 @@ async function stakingEc() {
     // );
 
     // console.log('first10Entries', first10Entries[0]);
-
+    // public key of provider 3
+    const delegatedTo = Buffer.from(
+      '034CED99AAD54DBD40CE2EB7971B25212DDD739FC68711A20DAFC58541818B9639',
+      'hex'
+    );
     console.log(chalk.blue('🔄 Staking...'));
-    await session.call(op('staking_deposit_native', createAmount(11, 6).value, null));
+    //  https://chromaway.gitlab.io/core/directory-chain/-directory%20chain/economy_chain/staking_deposit_native.html
+    await session.call(op('staking_deposit_native', 3 * 10 ** 6, delegatedTo));
     console.log(chalk.green('✅ Staked'));
+
+    // // https://chromaway.gitlab.io/core/directory-chain/-directory%20chain/economy_chain/staking_request_withdrawal.html?query=operation%20staking_request_withdrawal()
+    // await session.call(op('staking_request_withdrawal'));
+    // console.log(chalk.green('✅ Withdrawal requested'));
 
     const balances2 = await myAccount.getBalances();
 

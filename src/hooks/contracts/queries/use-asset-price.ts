@@ -2,13 +2,6 @@ import { useQuery } from '@tanstack/react-query';
 import { useChromiaAccount } from '../../configs/chromia-hooks';
 import { ensureString } from '@/utils/string';
 
-// Define asset price interface
-export interface AssetPrice {
-  stork_asset_id: string;
-  price: number;
-  timestamp: string;
-}
-
 /**
  * Hook to fetch a single asset price from the Chromia blockchain using TanStack Query
  * @param assetId The asset ID to fetch the price for

@@ -15,7 +15,7 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
-    "@chromia/ft4": "^1.1.0",
+    "@chromia/ft4": "^2.0.1",
     "@ethersproject/bignumber": "5.7.0",
     "chalk": "^5.4.1",
     "crypto-browserify": "^3.12.1",

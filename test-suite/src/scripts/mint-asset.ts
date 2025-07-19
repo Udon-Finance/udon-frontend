@@ -5,7 +5,7 @@ import chalk from 'chalk';
 import { getSessionOrRegister } from '../helpers';
 import { ensureBuffer } from '../helpers/buffer';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
-import { TOKENS } from '../configs/tokens';
+import { TOKENS, TOKENS_TCHR } from '../configs/tokens';
 
 // hippo: A8A05014A795D77C4FA12FDF08776FD70799549530F27ABB3B3331FB4D0A2AC8
 // nathan: 5D3D574FA59149FE64E7495907FA047A2AC80EA0524D66373D12770104A0B0FA
@@ -16,7 +16,7 @@ const ASSET_CONFIG = {
   // The amount to mint in whole tokens (will be converted to RAY)
   MINT_AMOUNT: 1000,
   // Target user ID
-  TARGET_USER_ID: ensureBuffer('15EA2F0FF36AECFF157962B384F4ABD93E39A9C9715177A4EF28444A41A539BD'),
+  TARGET_USER_ID: ensureBuffer('0911E88944035F70C311B0BFE02655ED29418A56AFFD6A5FF919FE9B868E33FF'),
 };
 
 async function mintAsset() {
@@ -82,6 +82,18 @@ async function mintAsset() {
     console.log(
       chalk.bold.green('\n✅✅✅ Asset minting completed successfully for all tokens ✅✅✅')
     );
+
+    const underlyingAssetResult = await adminSession.getAssetsBySymbol(TOKENS_TCHR.symbol);
+    const underlyingAssetId = underlyingAssetResult.data[0]?.id;
+    await adminSession.call(
+      op(
+        'set_using_as_collateral_op',
+        ASSET_CONFIG.TARGET_USER_ID,
+        underlyingAssetId,
+        true // enable collateral
+      )
+    );
+    console.log(chalk.green(`✅ Collateral enabled for ${TOKENS_TCHR.symbol}`));
   } catch (error) {
     console.error(chalk.bold.red('❌❌❌ ERROR IN MINT ASSET ❌❌❌'));
     console.error(chalk.red(error));

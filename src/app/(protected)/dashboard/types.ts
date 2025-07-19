@@ -18,6 +18,7 @@ export interface AssetPrice {
   stork_asset_id: string;
   price: number;
   timestamp: string;
+  asset_symbol: string;
 }
 
 export interface UserReserveDataResponse {
@@ -65,7 +66,7 @@ export interface UserReserveData {
   type: string;
   totalSupply: number;
   balance: number;
-
+  // isLsd: boolean;
   // Reserve fields
   reserveUnbacked: number;
   reserveAccruedToTreasury: number;
