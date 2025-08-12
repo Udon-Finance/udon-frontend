@@ -38,16 +38,20 @@ export function getCHRId() {
   // economy mint CHR
   return ensureString(
     getAssetBuffer(
-      'Chromia Test',
-      '090BCD47149FBB66F02489372E88A454E7A5645ADDE82125D40DF1EF0C76F874' // testnet eco rid
+      // 'Chromia Test',
+      // '090BCD47149FBB66F02489372E88A454E7A5645ADDE82125D40DF1EF0C76F874' // testnet eco rid
+      'Chromia',
+      '15C0CA99BEE60A3B23829968771C50E491BD00D2E3AE448580CD48A8D71E7BBA'
     )
   );
 }
 
 export function getCHRIdBuffer() {
   return getAssetBuffer(
-    'Chromia Test',
-    '090BCD47149FBB66F02489372E88A454E7A5645ADDE82125D40DF1EF0C76F874' // testnet eco rid
+    // 'Chromia Test',
+    // '090BCD47149FBB66F02489372E88A454E7A5645ADDE82125D40DF1EF0C76F874' // testnet eco rid
+    'Chromia',
+    '15C0CA99BEE60A3B23829968771C50E491BD00D2E3AE448580CD48A8D71E7BBA'
   );
 }
 
