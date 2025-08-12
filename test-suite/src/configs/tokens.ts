@@ -56,6 +56,7 @@ export const TOKENS = [
     price: parseUnits('0.22', 18).toString(),
     storkAssetId: 'CHRUSD',
   },
+
   // {
   //   name: 'Staked Chromia',
   //   symbol: 'sttCHR',
