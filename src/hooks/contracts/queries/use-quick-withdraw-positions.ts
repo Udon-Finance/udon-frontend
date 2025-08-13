@@ -103,7 +103,7 @@ export function getQuickWithdrawStatusForAsset(
   hasError: boolean;
   errorPositions: QuickWithdrawPosition[];
 } {
-  if (!quickWithdrawData || assetSymbol !== 'tCHR') {
+  if (!quickWithdrawData || assetSymbol !== 'CHR') {
     return {
       withdrawPositions: [],
       hasActiveWithdraws: false,
@@ -115,7 +115,7 @@ export function getQuickWithdrawStatusForAsset(
 
   const { positions } = quickWithdrawData;
 
-  // Filter positions for CHR asset (assuming tCHR maps to CHR in the backend)
+  // Filter positions for CHR asset (assuming CHR maps to CHR in the backend)
   const chrPositions = positions.filter(p => p.underlyingAssetId !== null);
 
   // Find positions with errors

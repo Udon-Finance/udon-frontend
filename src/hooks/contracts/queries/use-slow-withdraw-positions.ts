@@ -105,7 +105,7 @@ export function getSlowWithdrawStatusForAsset(
   canCompleteWithdraw: boolean;
   position: SlowWithdrawPosition | null;
 } {
-  if (!slowWithdrawData || assetSymbol !== 'tCHR') {
+  if (!slowWithdrawData || assetSymbol !== 'CHR') {
     return {
       withdrawStatus: null,
       hasError: false,
@@ -119,7 +119,7 @@ export function getSlowWithdrawStatusForAsset(
 
   const { positions } = slowWithdrawData;
 
-  // Find the most recent position for CHR asset (assuming tCHR maps to CHR in the backend)
+  // Find the most recent position for CHR asset (assuming CHR maps to CHR in the backend)
   const position = positions.find(p => p.underlyingAssetId !== null) || null;
 
   if (!position) {

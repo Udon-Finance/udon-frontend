@@ -141,7 +141,7 @@ export const SlowWithdrawProgressDialog: React.FC<SlowWithdrawProgressDialogProp
     },
   });
 
-  if (assetSymbol !== 'tCHR' || !slowWithdrawData) {
+  if (assetSymbol !== 'CHR' || !slowWithdrawData) {
     return null;
   }
 

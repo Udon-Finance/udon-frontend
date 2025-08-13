@@ -146,20 +146,20 @@ export function useCompletedAssets() {
 
   // For compatibility with old API, split supply/borrow positions
   const supplyPositions = useMemo(
-    // filter if currentATokenBalance > 0 and symbol is sttCHR we replace with tCHR
+    // filter if currentATokenBalance > 0 and symbol is stCHR we replace with CHR
     () => {
       const filteredReserves = userReserves.filter(r => r.currentATokenBalance > 0);
       return filteredReserves.map(r => {
-        if (r.symbol === 'sttCHR') {
-          const tCHR = userReserves.find(r => r.symbol === 'tCHR');
+        if (r.symbol === 'stCHR') {
+          const CHR = userReserves.find(r => r.symbol === 'CHR');
           return {
             ...r,
-            symbol: 'tCHR',
-            assetId: tCHR?.assetId,
-            name: tCHR?.name,
-            decimals: tCHR?.decimals,
-            iconUrl: tCHR?.iconUrl,
-            type: tCHR?.type,
+            symbol: 'CHR',
+            assetId: CHR?.assetId,
+            name: CHR?.name,
+            decimals: CHR?.decimals,
+            iconUrl: CHR?.iconUrl,
+            type: CHR?.type,
           };
         }
         return r;
@@ -269,11 +269,11 @@ export function useCompletedAssets() {
   }, [userReserves]);
 
   const supplyReserves = useMemo(() => {
-    return userReserves.filter(r => r.symbol !== 'sttCHR'); // because sttCHR is not supplyable
+    return userReserves.filter(r => r.symbol !== 'stCHR'); // because stCHR is not supplyable
   }, [userReserves]);
 
   const borrowReserves = useMemo(() => {
-    return userReserves.filter(r => r.symbol !== 'tCHR'); // because tCHR is not borrowable
+    return userReserves.filter(r => r.symbol !== 'CHR'); // because CHR is not borrowable
   }, [userReserves]);
 
   return {

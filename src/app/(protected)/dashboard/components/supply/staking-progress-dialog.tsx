@@ -161,7 +161,7 @@ export const StakingProgressDialog: React.FC<StakingProgressDialogProps> = ({
     }
   }, [open, selectedRecordIndex]);
 
-  if (assetSymbol !== 'tCHR' || !lsdData) {
+  if (assetSymbol !== 'CHR' || !lsdData) {
     return null;
   }
 

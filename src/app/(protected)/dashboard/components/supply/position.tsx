@@ -136,8 +136,8 @@ export const SupplyPositionTable: React.FC<SupplyPositionTableProps> = ({
   const handleWithdrawClick = (position: UserReserveData) => {
     setSelectedPosition(position);
 
-    // For tCHR (LSD), open LSD withdraw dialog, otherwise open normal withdraw dialog
-    if (position.symbol === 'tCHR') {
+    // For CHR (LSD), open LSD withdraw dialog, otherwise open normal withdraw dialog
+    if (position.symbol === 'CHR') {
       setLsdWithdrawDialogOpen(true);
     } else {
       setWithdrawDialogOpen(true);
@@ -267,8 +267,8 @@ export const SupplyPositionTable: React.FC<SupplyPositionTableProps> = ({
           return <Typography>_</Typography>;
         }
 
-        // For tCHR, show combined APY with tooltip breakdown
-        if (row.symbol === 'tCHR') {
+        // For CHR, show combined APY with tooltip breakdown
+        if (row.symbol === 'CHR') {
           return (
             <TooltipProvider>
               <Tooltip delayDuration={200}>
@@ -343,8 +343,8 @@ export const SupplyPositionTable: React.FC<SupplyPositionTableProps> = ({
       header: 'LSD',
       accessorKey: 'symbol',
       cell: ({ row }) => {
-        // Only show for tCHR
-        if (row.symbol !== 'tCHR') {
+        // Only show for CHR
+        if (row.symbol !== 'CHR') {
           return <Typography>_</Typography>;
         }
 
@@ -1008,7 +1008,7 @@ export const SupplyPositionTable: React.FC<SupplyPositionTableProps> = ({
 
   // Render expandable row content
   const renderExpandableContent = (symbol: string) => {
-    if (symbol !== 'tCHR') return null;
+    if (symbol !== 'CHR') return null;
 
     const supplyRecords = lsdData?.supplyRecords || [];
     const accumulatedRewards = lsdData?.rewards || [];

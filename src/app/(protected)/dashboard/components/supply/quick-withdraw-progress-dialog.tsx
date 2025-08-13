@@ -124,7 +124,7 @@ export const QuickWithdrawProgressDialog: React.FC<QuickWithdrawProgressDialogPr
     },
   });
 
-  if (assetSymbol !== 'tCHR' || !quickWithdrawData) {
+  if (assetSymbol !== 'CHR' || !quickWithdrawData) {
     return null;
   }
 

@@ -190,7 +190,7 @@ export function getStakingStatusForAsset(
   stakingAPY: number;
   isStaked: boolean;
 } {
-  if (!lsdData || assetSymbol !== 'tCHR') {
+  if (!lsdData || assetSymbol !== 'CHR') {
     return {
       stakingStatus: null,
       hasError: false,
@@ -202,7 +202,7 @@ export function getStakingStatusForAsset(
 
   const { positions, supplyRecords, rewards } = lsdData;
 
-  // Find position for CHR asset (assuming tCHR maps to CHR in the backend)
+  // Find position for CHR asset (assuming CHR maps to CHR in the backend)
   const position = positions[0]; // Since we only support CHR for LSD
   const supplyRecord = supplyRecords[0]; // Latest supply record
   const reward = rewards[0]; // Accumulated rewards

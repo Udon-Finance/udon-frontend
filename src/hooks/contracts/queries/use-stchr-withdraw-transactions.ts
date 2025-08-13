@@ -44,7 +44,7 @@ export function useStchrWithdrawTransactions(enabled: boolean = true) {
         keysToCamelCase(t)
       ) as StchrWithdrawTransaction[];
 
-      // Format transactions with proper number conversion (assuming 6 decimals for tCHR)
+      // Format transactions with proper number conversion (assuming 6 decimals for CHR)
       const transactions = rawTransactions.map(t => ({
         ...t,
         totalStchrAmount: Number(normalizeBN(t.totalStchrAmount.toString(), 6)),
@@ -88,7 +88,7 @@ export function getStchrWithdrawTransactionsForAsset(
   latestTransaction: StchrWithdrawTransaction | null;
   totalWithdrawn: number;
 } {
-  if (!transactionData || assetSymbol !== 'tCHR') {
+  if (!transactionData || assetSymbol !== 'CHR') {
     return {
       transactions: [],
       hasTransactions: false,
@@ -99,7 +99,7 @@ export function getStchrWithdrawTransactionsForAsset(
 
   const { transactions } = transactionData;
 
-  // Filter transactions for CHR asset (assuming tCHR maps to CHR in the backend)
+  // Filter transactions for CHR asset (assuming CHR maps to CHR in the backend)
   const chrTransactions = transactions.filter(t => t.underlyingAssetId !== null);
 
   // Get latest transaction (most recent)
