@@ -99,6 +99,8 @@ export function useLsdPosition() {
         user_account_id: account.id,
       });
 
+      console.log('rewardsResult in use-lsd-position', rewardsResult);
+
       const rawPositions = (Array.isArray(positionResult) ? positionResult : []).map(p =>
         keysToCamelCase(p)
       ) as UserLsdPosition[];

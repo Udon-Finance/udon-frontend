@@ -53,6 +53,10 @@ export const StchrWithdrawTransactionDialog: React.FC<StchrWithdrawTransactionDi
     transactionData
   );
 
+  console.log('transactions in stchr withdraw transaction dialog', transactions);
+  console.log('hasTransactions in stchr withdraw transaction dialog', hasTransactions);
+  console.log('totalWithdrawn in stchr withdraw transaction dialog', totalWithdrawn);
+
   // Sync activeTab when dialog opens
   React.useEffect(() => {
     if (open) {

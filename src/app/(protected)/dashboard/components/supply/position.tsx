@@ -35,6 +35,7 @@ import {
   useSlowWithdrawPositions,
   getSlowWithdrawStatusForAsset,
 } from '@/hooks/contracts/queries/use-slow-withdraw-positions';
+
 import {
   useStchrWithdrawTransactions,
   getStchrWithdrawTransactionsForAsset,
@@ -51,7 +52,6 @@ import {
   Target,
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/common/avatar';
-
 // Import mapping from staking dialog
 const STAKING_STATUS_MAP: Record<string, StakingStatus> = {
   PENDING_STAKING: StakingStatus.PENDING_STAKING,
@@ -183,233 +183,10 @@ export const SupplyPositionTable: React.FC<SupplyPositionTableProps> = ({
     setExpandedRows(newExpandedRows);
   };
 
-  // Handle asset click
-  const handleAssetClick = (asset: string) => {
-    router.push(`/reserve/${asset}`);
-  };
-
-  // Render asset icon and symbol
-  const renderAssetCell = (reserve: UserReserveData) => {
-    return (
-      <TooltipProvider>
-        <Tooltip delayDuration={100}>
-          <TooltipTrigger asChild>
-            <div
-              className="flex items-center gap-3 cursor-pointer"
-              onClick={() => handleAssetClick(reserve.assetId.toString('hex'))}
-            >
-              <Avatar className="w-8 h-8">
-                <AvatarImage src={reserve.iconUrl} alt={reserve.symbol} />
-                <AvatarFallback>{reserve.symbol.charAt(0)}</AvatarFallback>
-              </Avatar>
-              <Typography weight="medium">{reserve.symbol}</Typography>
-            </div>
-          </TooltipTrigger>
-          <TooltipContent side="bottom">
-            <p>{reserve.name}</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    );
-  };
-
-  // Define columns for the positions table
-  const columns: ColumnDef<UserReserveData>[] = [
-    {
-      header: 'Assets',
-      accessorKey: 'symbol',
-      cell: ({ row }) => renderAssetCell(row),
-      enableSorting: true,
-      meta: {
-        skeleton: (
-          <div className="flex items-center gap-3">
-            <Skeleton className="w-8 h-8 rounded-full" />
-            <Skeleton className="w-24 h-5" />
-          </div>
-        ),
-      },
-    },
-    {
-      header: 'Amount',
-      accessorKey: 'currentATokenBalance',
-      enableSorting: true,
-      cell: ({ row }) => {
-        const balance = row.currentATokenBalance;
-        const balanceUsd = Number(balance) * (row.price || 0);
-        return (
-          <div className="flex flex-col gap-2">
-            <CountUp value={Number(balance)} className="text-base" />
-            <Typography variant="small" color="submerged">
-              <CountUp value={balanceUsd} prefix="$" className="text-sm text-submerged" />
-            </Typography>
-          </div>
-        );
-      },
-      meta: {
-        skeleton: (
-          <div>
-            <Skeleton className="w-24 h-5 mb-1" />
-            <Skeleton className="w-16 h-4" />
-          </div>
-        ),
-      },
-    },
-    {
-      header: 'APY',
-      accessorKey: 'supplyAPY',
-      enableSorting: true,
-      cell: ({ row }) => {
-        const stakingInfo = getStakingStatusForAsset(row.symbol, lsdData);
-        const hasStakingAPY = stakingInfo.isStaked && stakingInfo.stakingAPY > 0;
-        const totalAPY = row.supplyAPY + (hasStakingAPY ? stakingInfo.stakingAPY : 0);
-
-        if (totalAPY === 0) {
-          return <Typography>_</Typography>;
-        }
-
-        // For tCHR, show combined APY with tooltip breakdown
-        if (row.symbol === 'tCHR') {
-          return (
-            <TooltipProvider>
-              <Tooltip delayDuration={200}>
-                <TooltipTrigger asChild>
-                  <div className="flex items-center gap-2 cursor-help">
-                    <div className="flex items-center gap-1">
-                      {hasStakingAPY && (
-                        <div className="flex -space-x-1">
-                          <div className="w-2 h-2 rounded-full bg-blue-500 dark:bg-blue-400" />
-                          <div className="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400" />
-                        </div>
-                      )}
-                      <CountUp
-                        value={totalAPY}
-                        suffix="%"
-                        className="text-sm font-semibold"
-                        decimals={2}
-                      />
-                    </div>
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent side="top" className="p-3">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-blue-500" />
-                      <Typography variant="small">
-                        Lending APY: <CountUp value={row.supplyAPY} decimals={2} suffix="%" />
-                      </Typography>
-                    </div>
-                    {hasStakingAPY && (
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                        <Typography variant="small">
-                          Staking APY:{' '}
-                          <CountUp value={stakingInfo.stakingAPY} decimals={2} suffix="%" />
-                        </Typography>
-                      </div>
-                    )}
-                    <div className="border-t border-border pt-2 mt-2">
-                      <Typography variant="small" weight="semibold">
-                        Total APY: <CountUp value={totalAPY} decimals={2} suffix="%" />
-                      </Typography>
-                    </div>
-                  </div>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          );
-        }
-
-        // For other assets, show simple APY
-        return <CountUp value={row.supplyAPY} suffix="%" className="text-sm" decimals={2} />;
-      },
-      meta: {
-        skeleton: <Skeleton className="w-20 h-5" />,
-      },
-    },
-    {
-      header: 'Collateral',
-      accessorKey: 'usageAsCollateralEnabled',
-      cell: ({ row }) => (
-        <Switch
-          checked={row.usageAsCollateralEnabled}
-          onCheckedChange={() => handleCollateralSwitch(row)}
-        />
-      ),
-      meta: {
-        skeleton: <Skeleton className="w-10 h-5 rounded-full" />,
-      },
-    },
-    {
-      header: 'LSD',
-      accessorKey: 'symbol',
-      cell: ({ row }) => {
-        // Only show for tCHR
-        if (row.symbol !== 'tCHR') {
-          return <Typography>_</Typography>;
-        }
-
-        const isExpanded = expandedRows.has(row.symbol);
-
-        return (
-          <div
-            onClick={() => handleExpandRow(row.symbol)}
-            className="flex flex-row justify-center items-center cursor-pointer gap-1"
-          >
-            <Typography className="text-embossed">View More</Typography>
-            <ChevronDown
-              className={cn(
-                'w-4 h-4 text-white transition-transform duration-200 ease-out',
-                isExpanded ? 'animate-chevron-rotate-up' : 'animate-chevron-rotate-down'
-              )}
-            />
-          </div>
-        );
-      },
-      meta: {
-        skeleton: <Skeleton className="w-8 h-8 rounded-full" />,
-      },
-    },
-    {
-      header: '',
-      accessorKey: 'symbol',
-      cell: ({ row }) => {
-        return (
-          <div className="flex justify-end">
-            <div className="flex flex-col gap-2">
-              <Button
-                variant="gradient"
-                className="w-[100px]"
-                onClick={() => handleSupplyClick(row)}
-              >
-                Supply
-              </Button>
-              <Button
-                variant="outlineGradient"
-                className="w-[100px]"
-                onClick={() => handleWithdrawClick(row)}
-              >
-                Withdraw
-              </Button>
-            </div>
-          </div>
-        );
-      },
-      meta: {
-        skeleton: (
-          <div className="flex justify-end">
-            <div className="flex flex-col gap-2">
-              <Skeleton className="w-[100px] h-9" />
-              <Skeleton className="w-[100px] h-9" />
-            </div>
-          </div>
-        ),
-      },
-    },
-  ];
-
   // Render CHR withdraw progress pill
   const renderChrWithdrawProgressPill = (symbol: string) => {
     const withdrawInfo = getSlowWithdrawStatusForAsset(symbol, slowWithdrawData);
+    console.log('withdrawInfo in position', withdrawInfo);
     const { hasError, isCompleted, canCompleteWithdraw, position } = withdrawInfo;
 
     // Base card structure with fixed height
@@ -642,6 +419,11 @@ export const SupplyPositionTable: React.FC<SupplyPositionTableProps> = ({
       symbol,
       stchrTransactionData
     );
+
+    console.log('stchrTransactionData in position', stchrTransactionData);
+    console.log('transactions in position', transactions);
+    console.log('hasTransactions in position', hasTransactions);
+    console.log('totalWithdrawn in position', totalWithdrawn);
 
     // Base card structure with fixed height
     const baseCardClasses =
@@ -1006,6 +788,231 @@ export const SupplyPositionTable: React.FC<SupplyPositionTableProps> = ({
     );
   };
 
+  // Handle asset click
+  const handleAssetClick = (asset: string) => {
+    router.push(`/reserve/${asset}`);
+  };
+
+  // Render asset icon and symbol
+  // Render reserve. icon and symbol
+  const renderAssetCell = (reserve: UserReserveData) => {
+    return (
+      <TooltipProvider>
+        <Tooltip delayDuration={100}>
+          <TooltipTrigger asChild>
+            <div
+              className="flex items-center gap-3 cursor-pointer"
+              onClick={() => handleAssetClick(reserve.assetId.toString('hex'))}
+            >
+              <Avatar className="w-8 h-8">
+                <AvatarImage src={reserve.iconUrl} alt={reserve.symbol} />
+                <AvatarFallback>{reserve.symbol.charAt(0)}</AvatarFallback>
+              </Avatar>
+              <Typography weight="medium">{reserve.symbol}</Typography>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">
+            <p>{reserve.name}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+  };
+
+  // Define columns for the positions table
+  const columns: ColumnDef<UserReserveData>[] = [
+    {
+      header: 'Assets',
+      accessorKey: 'symbol',
+      cell: ({ row }) => renderAssetCell(row),
+      enableSorting: true,
+      meta: {
+        skeleton: (
+          <div className="flex items-center gap-3">
+            <Skeleton className="w-8 h-8 rounded-full" />
+            <Skeleton className="w-24 h-5" />
+          </div>
+        ),
+      },
+    },
+    {
+      header: 'Amount',
+      accessorKey: 'currentATokenBalance',
+      enableSorting: true,
+      cell: ({ row }) => {
+        const balance = row.currentATokenBalance;
+        const balanceUsd = Number(balance) * (row.price || 0);
+        return (
+          <div className="flex flex-col gap-2">
+            <CountUp value={Number(balance)} className="text-base" />
+            <Typography variant="small" color="submerged">
+              <CountUp value={balanceUsd} prefix="$" className="text-sm text-submerged" />
+            </Typography>
+          </div>
+        );
+      },
+      meta: {
+        skeleton: (
+          <div>
+            <Skeleton className="w-24 h-5 mb-1" />
+            <Skeleton className="w-16 h-4" />
+          </div>
+        ),
+      },
+    },
+    {
+      header: 'APY',
+      accessorKey: 'supplyAPY',
+      enableSorting: true,
+      cell: ({ row }) => {
+        const stakingInfo = getStakingStatusForAsset(row.symbol, lsdData);
+        const hasStakingAPY = stakingInfo.isStaked && stakingInfo.stakingAPY > 0;
+        const totalAPY = row.supplyAPY + (hasStakingAPY ? stakingInfo.stakingAPY : 0);
+
+        if (totalAPY === 0) {
+          return <Typography>_</Typography>;
+        }
+
+        // For tCHR, show combined APY with tooltip breakdown
+        if (row.symbol === 'tCHR') {
+          return (
+            <TooltipProvider>
+              <Tooltip delayDuration={200}>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center gap-2 cursor-help">
+                    <div className="flex items-center gap-1">
+                      {hasStakingAPY && (
+                        <div className="flex -space-x-1">
+                          <div className="w-2 h-2 rounded-full bg-blue-500 dark:bg-blue-400" />
+                          <div className="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400" />
+                        </div>
+                      )}
+                      <CountUp
+                        value={totalAPY}
+                        suffix="%"
+                        className="text-sm font-semibold"
+                        decimals={2}
+                      />
+                    </div>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="top" className="p-3">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-blue-500" />
+                      <Typography variant="small">
+                        Lending APY: <CountUp value={row.supplyAPY} decimals={2} suffix="%" />
+                      </Typography>
+                    </div>
+                    {hasStakingAPY && (
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                        <Typography variant="small">
+                          Staking APY:{' '}
+                          <CountUp value={stakingInfo.stakingAPY} decimals={2} suffix="%" />
+                        </Typography>
+                      </div>
+                    )}
+                    <div className="border-t border-border pt-2 mt-2">
+                      <Typography variant="small" weight="semibold">
+                        Total APY: <CountUp value={totalAPY} decimals={2} suffix="%" />
+                      </Typography>
+                    </div>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          );
+        }
+
+        // For other assets, show simple APY
+        return <CountUp value={row.supplyAPY} suffix="%" className="text-sm" decimals={2} />;
+      },
+      meta: {
+        skeleton: <Skeleton className="w-20 h-5" />,
+      },
+    },
+    {
+      header: 'Collateral',
+      accessorKey: 'usageAsCollateralEnabled',
+      cell: ({ row }) => (
+        <Switch
+          checked={row.usageAsCollateralEnabled}
+          onCheckedChange={() => handleCollateralSwitch(row)}
+        />
+      ),
+      meta: {
+        skeleton: <Skeleton className="w-10 h-5 rounded-full" />,
+      },
+    },
+    {
+      header: 'LSD',
+      accessorKey: 'symbol',
+      cell: ({ row }) => {
+        // Only show for tCHR
+        if (row.symbol !== 'tCHR') {
+          return <Typography>_</Typography>;
+        }
+
+        const isExpanded = expandedRows.has(row.symbol);
+
+        return (
+          <div
+            onClick={() => handleExpandRow(row.symbol)}
+            className="flex flex-row justify-center items-center cursor-pointer gap-1"
+          >
+            <Typography className="text-embossed">View More</Typography>
+            <ChevronDown
+              className={cn(
+                'w-4 h-4 text-white transition-transform duration-200 ease-out',
+                isExpanded ? 'animate-chevron-rotate-up' : 'animate-chevron-rotate-down'
+              )}
+            />
+          </div>
+        );
+      },
+      meta: {
+        skeleton: <Skeleton className="w-8 h-8 rounded-full" />,
+      },
+    },
+    {
+      header: '',
+      accessorKey: 'symbol',
+      cell: ({ row }) => {
+        return (
+          <div className="flex justify-end">
+            <div className="flex flex-col gap-2">
+              <Button
+                variant="gradient"
+                className="w-[100px]"
+                onClick={() => handleSupplyClick(row)}
+              >
+                Supply
+              </Button>
+              <Button
+                variant="outlineGradient"
+                className="w-[100px]"
+                onClick={() => handleWithdrawClick(row)}
+              >
+                Withdraw
+              </Button>
+            </div>
+          </div>
+        );
+      },
+      meta: {
+        skeleton: (
+          <div className="flex justify-end">
+            <div className="flex flex-col gap-2">
+              <Skeleton className="w-[100px] h-9" />
+              <Skeleton className="w-[100px] h-9" />
+            </div>
+          </div>
+        ),
+      },
+    },
+  ];
+
   // Render expandable row content
   const renderExpandableContent = (symbol: string) => {
     if (symbol !== 'tCHR') return null;
@@ -1112,6 +1119,7 @@ export const SupplyPositionTable: React.FC<SupplyPositionTableProps> = ({
                   )}
                 </Badge>
               </div>
+
               <SortableTable<UserReserveData>
                 data={positions}
                 columns={columns}
@@ -1145,29 +1153,12 @@ export const SupplyPositionTable: React.FC<SupplyPositionTableProps> = ({
       {/* Withdraw Dialog */}
       {selectedPosition && withdrawDialogOpen && (
         <WithdrawDialog
+          yourSupplyCollateralPosition={yourSupplyCollateralPosition}
           open={withdrawDialogOpen}
           onOpenChange={setWithdrawDialogOpen}
           reserve={selectedPosition}
           mutateAssets={mutateAssets}
           accountData={accountData}
-          yourSupplyCollateralPosition={yourSupplyCollateralPosition}
-        />
-      )}
-
-      {/* Collateral Dialog */}
-      {selectedCollateral && (
-        <CollateralDialog
-          key={`collateral-${selectedCollateral.assetId.toString('hex')}`}
-          open={collateralDialogOpen}
-          onOpenChange={open => {
-            setCollateralDialogOpen(open);
-            if (!open) {
-              setSelectedCollateral(null);
-            }
-          }}
-          reserve={selectedCollateral}
-          accountData={accountData}
-          mutateAssets={mutateAssets}
         />
       )}
 
@@ -1179,6 +1170,17 @@ export const SupplyPositionTable: React.FC<SupplyPositionTableProps> = ({
           reserve={selectedPosition}
           mutateAssets={mutateAssets}
           accountData={accountData}
+        />
+      )}
+
+      {/* Collateral Dialog */}
+      {selectedCollateral && (
+        <CollateralDialog
+          open={collateralDialogOpen}
+          onOpenChange={setCollateralDialogOpen}
+          reserve={selectedCollateral}
+          accountData={accountData}
+          mutateAssets={mutateAssets}
         />
       )}
 

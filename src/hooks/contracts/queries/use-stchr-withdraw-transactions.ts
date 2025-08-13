@@ -56,6 +56,8 @@ export function useStchrWithdrawTransactions(enabled: boolean = true) {
         totalStchrBefore: Number(normalizeBN(t.totalStchrBefore.toString(), 6)),
       }));
 
+      console.log('transactions in use-stchr-withdraw-transactions', transactions);
+
       return {
         transactions,
       };

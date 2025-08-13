@@ -3,6 +3,7 @@ import { createAmount, op } from '@chromia/ft4';
 import { useChromiaAccount } from '@/hooks/configs/chromia-hooks';
 import { publicClientConfig } from '@/configs/client';
 import { useFtSession } from '@chromia/react';
+import { ensureBuffer } from '@/utils/string';
 
 interface ChrWithdrawParams {
   assetId: string | Buffer;
@@ -58,7 +59,7 @@ export function useChrWithdraw({
         // Execute CHR withdraw operation
         const result = await session
           .transactionBuilder()
-          .add(op('withdraw_chr', params.assetId, amountValue))
+          .add(op('withdraw_chr', ensureBuffer(params.assetId), amountValue))
           .buildAndSend();
 
         console.log('CHR withdraw transaction result:', result);
