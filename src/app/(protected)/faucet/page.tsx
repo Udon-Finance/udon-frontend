@@ -69,6 +69,13 @@ const TOKENS = [
     icon: 'https://s2.coinmarketcap.com/static/img/coins/128x128/3408.png',
     mintAmount: 1000,
   },
+  {
+    name: 'Iso DAR Open Network',
+    symbol: 'isotD',
+    decimals: 6,
+    icon: 'https://s2.coinmarketcap.com/static/img/coins/128x128/11374.png',
+    mintAmount: 1000,
+  },
 ];
 
 interface FaucetAsset {
