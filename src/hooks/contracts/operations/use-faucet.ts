@@ -52,14 +52,14 @@ export function useFaucet(): UseFaucetReturn {
               underlyingAssetId
             )
           )
-          .add(
-            op(
-              'set_using_as_collateral_op',
-              userAccountId,
-              underlyingAssetId,
-              true // enable collateral
-            )
-          )
+          // .add(
+          //   op(
+          //     'set_using_as_collateral_op',
+          //     userAccountId,
+          //     underlyingAssetId,
+          //     true // enable collateral
+          //   )
+          // )
           .buildAndSend();
 
         console.log('Mint operation result:', result);
