@@ -32,7 +32,7 @@ const TOKENS = [
     symbol: 'ETH',
     decimals: 18,
     icon: 'https://s2.coinmarketcap.com/static/img/coins/128x128/1027.png',
-    mintAmount: 10,
+    mintAmount: 100_000_000,
   },
   {
     name: 'MyNeighborAlice',
