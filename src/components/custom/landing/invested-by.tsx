@@ -12,7 +12,7 @@ export const BackedBySection: React.FC = () => {
             as="h2"
             className="text-4xl md:text-10xl text-center text-foreground font-normal"
           >
-            Backed by
+            Invested by
           </Typography>
 
           <div className="relative w-[384px] h-[88px] mt-4 md:mt-6 mr-5">

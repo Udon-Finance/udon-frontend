@@ -2,7 +2,7 @@
 
 import Hero from '@/components/custom/landing/hero';
 import React, { useEffect, useState, useRef } from 'react';
-import { BackedBySection } from '@/components/custom/landing/backed-by';
+import { BackedBySection } from '@/components/custom/landing/invested-by';
 import { UpcomingFeatures } from '@/components/custom/landing/upcoming-features';
 import { Header } from '@/components/custom/landing/header';
 import { InfrastructureSection } from '@/components/custom/landing/infrastructure';
